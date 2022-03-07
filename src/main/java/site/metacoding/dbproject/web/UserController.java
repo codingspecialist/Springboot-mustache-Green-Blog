@@ -1,11 +1,11 @@
 package site.metacoding.dbproject.web;
 
-import java.sql.PreparedStatement;
+import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,15 +19,18 @@ public class UserController {
 
     // 컴퍼지션 (의존성 연결)
     private UserRepository userRepository;
+    private HttpSession session;
 
     // DI 받는 코드!!
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, HttpSession session) {
         this.userRepository = userRepository;
+        this.session = session;
     }
 
     // 회원가입 페이지 (정적) - 로그인X
     @GetMapping("/joinForm")
     public String joinForm() {
+        // 10초씩
         return "user/joinForm";
     }
 
@@ -54,8 +57,9 @@ public class UserController {
     // 이유 : 주소에 패스워드를 남길 수 없으니까!!
     // 로그인 - - 로그인X
     @PostMapping("/login")
-    public String login(HttpServletRequest request, User user) {
-        HttpSession session = request.getSession(); // 쿠키에 sessionId : 85
+    public String login(User user) {
+
+        System.out.println("사용자로 부터 받은 username, password : " + user);
 
         User userEntity = userRepository.mLogin(user.getUsername(), user.getPassword());
 
@@ -70,10 +74,37 @@ public class UserController {
         return "redirect:/"; // PostController 만들고 수정하자.
     }
 
+    // http://localhost:8080/user/1
     // 유저상세 페이지 (동적) - 로그인O
     @GetMapping("/user/{id}")
-    public String detail(@PathVariable Integer id) {
-        return "user/detail";
+    public String detail(@PathVariable Integer id, Model model) {
+
+        // 유효성 검사 하기 (수십개....엄청 많겠죠?)
+
+        User principal = (User) session.getAttribute("principal");
+
+        // 1. 인증 체크
+        if (principal == null) {
+            return "error/page1";
+        }
+
+        // 2. 권한체크
+        if (principal.getId() != id) {
+            return "error/page1";
+        }
+
+        // 3. 핵심로직
+        Optional<User> userOp = userRepository.findById(id);
+
+        if (userOp.isPresent()) {
+            User userEntity = userOp.get();
+            model.addAttribute("user", userEntity);
+            return "user/detail";
+        } else {
+            return "error/page1";
+        }
+
+        // DB에 로그 남기기 (로그인 한 아이디)
     }
 
     // 유저수정 페이지 (동적) - 로그인O

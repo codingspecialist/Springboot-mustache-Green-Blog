@@ -6,15 +6,15 @@
     <!-- 상세정보보기 시작 -->
 
     <div class="mb-3 mt-3">
-        유저네임 자리
+        {{user.username}}
     </div>
     <div class="mb-3">
-        패스워드 자리
+        {{user.password}}
     </div>
     <div class="mb-3">
-        이메일 자리
+        {{user.email}}
     </div>
-    <a href="/user/1/updateForm" class="btn btn-dark">수정 페이지이동</a>
+    <a href="/user/{{user.id}}/updateForm" class="btn btn-dark">수정 페이지이동</a>
 
     <!-- 상세정보보기 끝 -->
 
