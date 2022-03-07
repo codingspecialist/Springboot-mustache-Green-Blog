@@ -2,6 +2,9 @@ package site.metacoding.dbproject.web;
 
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -59,7 +62,15 @@ public class UserController {
 
     // 로그인 페이지 (정적) - 로그인X
     @GetMapping("/loginForm")
-    public String loginForm() {
+    public String loginForm(HttpServletRequest request, Model model) {
+        // request.getHeader("Cookie");
+        Cookie[] cookies = request.getCookies(); // jS
+        for (Cookie cookie : cookies) {
+            System.out.println("쿠키값 : " + cookie.getName());
+            if (cookie.getName().equals("remember")) {
+                model.addAttribute("remember", cookie.getValue());
+            }
+        }
         return "user/loginForm";
     }
 
@@ -69,7 +80,7 @@ public class UserController {
     // 이유 : 주소에 패스워드를 남길 수 없으니까!!
     // 로그인 - - 로그인X
     @PostMapping("/login")
-    public String login(User user) {
+    public String login(User user, HttpServletResponse response) {
 
         System.out.println("사용자로 부터 받은 username, password : " + user);
 
@@ -80,6 +91,10 @@ public class UserController {
         } else {
             System.out.println("로그인 되었습니다");
             session.setAttribute("principal", userEntity);
+
+            if (user.getRemember().equals("on")) {
+                response.setHeader("Set-Cookie", "remember=" + user.getUsername());
+            }
         }
         // 1. DB연결해서 username, password 있는지 확인
         // 2. 있으면 session 영역에 인증됨 이라고 메시지 하나 넣어두자.
