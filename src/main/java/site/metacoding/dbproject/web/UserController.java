@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import site.metacoding.dbproject.domain.user.User;
 import site.metacoding.dbproject.domain.user.UserRepository;
@@ -34,11 +35,22 @@ public class UserController {
         return "user/joinForm";
     }
 
+    // username=ssar&password=&email=ssar@nate.com 패스워드 공백
+    // username=ssar&email=ssar@nate.com 패스워드 null
     // username=ssar&password=1234&email=ssar@nate.com (x-www-form)
     // 회원가입 - 로그인X
     @PostMapping("/join")
     public String join(User user) {
-        System.out.println("user : " + user);
+
+        // 1. username, password, email 1.null체크, 2.공백체크
+        if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
+            return "redirect:/joinForm";
+        }
+        if (user.getUsername().equals("") || user.getPassword().equals("") || user.getEmail().equals("")) {
+            return "redirect:/joinForm";
+        }
+
+        // 2. 핵심로직
         User userEntity = userRepository.save(user);
         System.out.println("userEntity : " + userEntity);
         // redirect:매핑주소
