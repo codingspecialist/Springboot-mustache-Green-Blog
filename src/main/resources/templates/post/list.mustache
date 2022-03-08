@@ -4,12 +4,14 @@
 <div class="container mt-3">
 
     <!-- 게시글 아이템 시작 -->
+    {{#posts}}
     <div class="card mb-3">
         <div class="card-body">
-            <h4 class="card-title">제목입니다.</h4>
-            <a href="/post/1" class="btn btn-dark">상세보기</a>
+            <h4 class="card-title">{{title}}</h4>
+            <a href="/post/{{id}}" class="btn btn-dark">상세보기</a>
         </div>
     </div>
+    {{/posts}}
     <!-- 게시글 아이템 끝 -->
 
     <ul class="pagination justify-content-center">
