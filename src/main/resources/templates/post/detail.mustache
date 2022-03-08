@@ -1,0 +1,22 @@
+{{> /layout/header}}
+
+<!-- 컨테이너 시작 -->
+<div class="container mt-3">
+
+    <!-- 상세정보보기 시작 -->
+    <div class="mb-3">
+        작성자 : {{post.user.username}}
+    </div>
+    <div class="mb-3 mt-3">
+        {{post.title}}
+    </div>
+    <div class="mb-3">
+        {{post.content}}
+    </div>
+    <a href="/s/post/{{post.id}}/updateForm" class="btn btn-dark">수정 페이지이동</a>
+    <!-- 상세정보보기 끝 -->
+
+</div>
+<!-- 컨테이너 끝 -->
+
+{{> /layout/footer}}

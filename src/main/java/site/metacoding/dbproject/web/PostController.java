@@ -1,5 +1,7 @@
 package site.metacoding.dbproject.web;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -46,8 +48,17 @@ public class PostController {
 
     // GET 글상세보기 페이지 /post/{id} (삭제버튼 만들어 두면됨, 수정버튼 만들어 두면됨) - 인증 X
     @GetMapping("/post/{id}") // Get요청에 /post 제외 시키기
-    public String detail(@PathVariable Integer id) {
-        return "post/detail";
+    public String detail(@PathVariable Integer id, Model model) {
+        Optional<Post> postOp = postRepository.findById(id);
+
+        if (postOp.isPresent()) {
+            Post postEntity = postOp.get();
+            model.addAttribute("post", postEntity);
+            return "post/detail";
+        } else {
+            return "error/page1";
+        }
+
     }
 
     // GET 글수정 페이지 /post/{id}/updateForm - 인증 O
