@@ -109,9 +109,16 @@ public class UserController {
         return "redirect:/"; // PostController 만들고 수정하자.
     }
 
+    // 로그아웃 - 로그인O
+    @GetMapping("/logout")
+    public String logout() {
+        session.invalidate();
+        return "redirect:/loginForm"; // PostController 만들고 수정하자.
+    }
+
     // http://localhost:8080/user/1
     // 유저상세 페이지 (동적) - 로그인O
-    @GetMapping("/user/{id}")
+    @GetMapping("/s/user/{id}")
     public String detail(@PathVariable Integer id, Model model) {
 
         // 유효성 검사 하기 (수십개....엄청 많겠죠?)
@@ -143,21 +150,17 @@ public class UserController {
     }
 
     // 유저수정 페이지 (동적) - 로그인O
-    @GetMapping("/user/updateForm")
+    @GetMapping("/s/user/updateForm")
     public String updateForm() {
+
         return "user/updateForm";
     }
 
     // 유저수정 - 로그인O
-    @PutMapping("/user/{id}")
+    @PutMapping("/s/user/{id}")
     public String update(@PathVariable Integer id) {
+
         return "redirect:/user/" + id;
     }
 
-    // 로그아웃 - 로그인O
-    @GetMapping("/logout")
-    public String logout() {
-        session.invalidate();
-        return "redirect:/loginForm"; // PostController 만들고 수정하자.
-    }
 }
