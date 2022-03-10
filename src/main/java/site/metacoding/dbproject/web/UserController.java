@@ -42,6 +42,7 @@ public class UserController {
     // username=ssar&email=ssar@nate.com 패스워드 null
     // username=ssar&password=1234&email=ssar@nate.com (x-www-form)
     // 회원가입 - 로그인X
+
     @PostMapping("/join")
     public String join(User user) {
 
@@ -85,9 +86,9 @@ public class UserController {
     // 그런데 로그인만 예외 (POST)
     // 이유 : 주소에 패스워드를 남길 수 없으니까!!
     // 로그인 - - 로그인X
+
     @PostMapping("/login")
     public String login(User user, HttpServletResponse response) {
-
         System.out.println("사용자로 부터 받은 username, password : " + user);
 
         User userEntity = userRepository.mLogin(user.getUsername(), user.getPassword());
