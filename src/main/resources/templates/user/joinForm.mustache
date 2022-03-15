@@ -6,7 +6,7 @@
     <!-- 회원가입 폼 시작 -->
     <form action="/join" method="post">
         <div class="mb-3 mt-3">
-            <input type="text" class="form-control" placeholder="Enter username" name="username" required>
+            <input type="text" class="form-control" placeholder="Enter username" name="username" id="username" required>
         </div>
         <div class="mb-3">
             <input type="password" class="form-control" placeholder="Enter password" name="password" required
@@ -21,5 +21,26 @@
 
 </div>
 <!-- 컨테이너 끝 -->
+
+<script>
+
+    async function usernameSameCheck(username) {
+        let response = await fetch(`/api/user/username/same-check?username=${username}`);
+        let responseJson = await response.json();
+
+        console.log(responseJson);
+
+        if (responseJson.data == "있어") {
+            alert("해당 아이디를 사용할 수 없습니다.");
+            let prevUsername = $("#username").val().slice(0, -1);
+            $("#username").val(prevUsername);
+        }
+    }
+
+    $("#username").keyup((event) => {
+        //console.log(event.target.value);
+        usernameSameCheck(event.target.value);
+    });
+</script>
 
 {{> /layout/footer}}
