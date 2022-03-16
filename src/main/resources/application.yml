@@ -20,6 +20,7 @@ spring:
       password: green1234
 
   jpa:
+    open-in-view: true
     hibernate:
       ddl-auto: update
       naming:

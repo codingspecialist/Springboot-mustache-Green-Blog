@@ -30,6 +30,7 @@ import lombok.ToString;
 @Data // Getter, Setter, ToString
 @Entity // 서버 실행시 해당 클래스로 테이블을 생성해!!
 @EntityListeners(AuditingEntityListener.class) // 현재시간 입력을 위해 필요한 어노테이션
+
 public class User {
     // IDENTITY 전략은 DB에게 번호증가 전략을 위임하는 것!! - 알아서 디비에 맞게 찾아줌
     @Id
