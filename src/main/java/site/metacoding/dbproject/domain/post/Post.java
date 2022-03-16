@@ -40,7 +40,7 @@ public class Post {
     private String content;
 
     @JoinColumn(name = "userId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     @CreatedDate // insert

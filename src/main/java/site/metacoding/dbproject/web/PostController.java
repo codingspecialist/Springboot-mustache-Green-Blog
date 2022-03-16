@@ -14,66 +14,53 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import site.metacoding.dbproject.domain.post.Post;
 import site.metacoding.dbproject.domain.post.PostRepository;
 import site.metacoding.dbproject.domain.user.User;
+import site.metacoding.dbproject.service.PostService;
 
 @RequiredArgsConstructor // final이 붙은 애들에 대한 생성자를 만들어준다.
 @Controller
 public class PostController {
 
     private final HttpSession session;
-    private final PostRepository postRepository;
+    private final PostService postService;
 
     // GET 글쓰기 페이지 /post/writeForm - 인증 O
     @GetMapping("/s/post/writeForm")
     public String writeForm() {
-
         if (session.getAttribute("principal") == null) {
             return "redirect:/loginForm";
         }
-
         return "post/writeForm";
     }
 
-    // 메인페이지 - 인증 X
-    // GET 글목록 페이지 /post/list, /
-    // @GetMapping({"/", "/post/list"})
     @GetMapping({ "/", "/post/list" })
     public String list(@RequestParam(defaultValue = "0") Integer page, Model model) {
-        // 1. postRepository의 findAll() 호출
-        // 2. model에 담기
-        // model.addAttribute("posts",
-        // postRepository.findAll(Sort.by(Sort.Direction.DESC, "id")));
-        PageRequest pq = PageRequest.of(page, 3);
-        model.addAttribute("posts", postRepository.findAll(pq));
+
+        Page<Post> pagePosts = postService.글목록보기(page);
+
+        model.addAttribute("posts", pagePosts);
         model.addAttribute("prevPage", page - 1);
         model.addAttribute("nextPage", page + 1);
 
         return "post/list";
     }
 
-    @GetMapping("/test/post/list")
-    public @ResponseBody Page<Post> listTest(@RequestParam(defaultValue = "0") Integer page) {
-        PageRequest pq = PageRequest.of(page, 3);
-        return postRepository.findAll(pq);
-    }
-
+    // 이사!!
     // GET 글상세보기 페이지 /post/{id} (삭제버튼 만들어 두면됨, 수정버튼 만들어 두면됨) - 인증 X
     @GetMapping("/post/{id}") // Get요청에 /post 제외 시키기
     public String detail(@PathVariable Integer id, Model model) {
-        Optional<Post> postOp = postRepository.findById(id);
 
-        if (postOp.isPresent()) {
-            Post postEntity = postOp.get();
-            model.addAttribute("post", postEntity);
-            System.out.println("===========================================");
-            return "post/detail";
-        } else {
+        Post postEntity = postService.글상세보기(id);
+
+        if (postEntity == null) {
             return "error/page1";
+        } else {
+            model.addAttribute("post", postEntity);
+            return "post/detail";
         }
 
     }
@@ -96,6 +83,7 @@ public class PostController {
         return "redirect:/post/" + id;
     }
 
+    // 이사!!
     // POST 글쓰기 /post - 글목록으로 가기 - 인증 O
     @PostMapping("/s/post")
     public String write(Post post) {
@@ -107,10 +95,8 @@ public class PostController {
         }
 
         User principal = (User) session.getAttribute("principal");
-        post.setUser(principal);
-        // insert into post(title, content, userId) values(사용자, 사용자, 세션오브젝트의 PK)
+        postService.글쓰기(post, principal);
 
-        postRepository.save(post);
         return "redirect:/";
     }
 }

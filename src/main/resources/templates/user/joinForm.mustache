@@ -28,7 +28,7 @@
         let response = await fetch(`/api/user/username/same-check?username=${username}`);
         let responseJson = await response.json();
 
-        console.log(responseJson);
+        //console.log(responseJson);
 
         if (responseJson.data == "있어") {
             alert("해당 아이디를 사용할 수 없습니다.");
