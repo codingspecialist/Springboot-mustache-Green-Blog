@@ -3,17 +3,12 @@
 <!-- 컨테이너 시작 -->
 <div class="container mt-3">
 
-    현재페이지 번호 : {{posts.number}} <br />
-    첫 페이지 : {{posts.first}} <br />
-    마지막 페이지 : {{posts.last}} <br />
-
-
     <!-- 게시글 아이템 시작 -->
     {{#posts.content}}
     <div class="card mb-3">
         <div class="card-body">
             <h4 class="card-title">{{title}}</h4>
-            <a href="/post/{{id}}" class="btn btn-dark">상세보기</a>
+            <a href="/post/{{id}}" class="btn btn-secondary">상세보기</a>
         </div>
     </div>
     {{/posts.content}}
